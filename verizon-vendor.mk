@@ -14,12 +14,13 @@
 
 
 PRODUCT_COPY_FILES += \
+    vendor/verizon/proprietary/com.motorola.android.server.ims.apk:system/app/com.motorola.android.server.ims.apk \
     vendor/verizon/proprietary/ConnMO.apk:system/app/ConnMO.apk \
     vendor/verizon/proprietary/DMService.apk:system/app/DMService.apk \
-    vendor/verizon/proprietary/IMSFramework.apk:system/app/IMSFramework.apk \
     vendor/verizon/proprietary/SimManagerInvisible.apk:system/app/SimManagerInvisible.apk \
     vendor/verizon/proprietary/vzwapnpermission.apk:system/app/vzwapnpermission.apk \
     vendor/verizon/proprietary/VZWAPNLib.apk:system/app/VZWAPNLib.apk \
     vendor/verizon/proprietary/VZWAPNService.apk:system/app/VZWAPNService.apk \
-    vendor/verizon/proprietary/libims.so:system/vendor/lib/libims.so \
-    vendor/verizon/proprietary/libims_jni.so:system/vendor/lib/libims_jni.so \
+#    vendor/verizon/proprietary/IMSFramework.apk:system/app/IMSFramework.apk \
+#    vendor/verizon/proprietary/libims.so:system/vendor/lib/libims.so \
+#    vendor/verizon/proprietary/libims_jni.so:system/vendor/lib/libims_jni.so \
