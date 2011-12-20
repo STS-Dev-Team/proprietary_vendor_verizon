@@ -12,16 +12,71 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+LOCAL_PATH := $(call my-dir)
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := com.motorola.android.server.ims.apk
+LOCAL_SRC_FILES := $(LOCAL_MODULE).apk
+LOCAL_MODULE_CLASS := APPS
+LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
+
+LOCAL_CERTIFICATE := platform
+
+include $(BUILD_PREBUILT)
+
+LOCAL_PATH := $(call my-dir)
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := ConnMO.apk
+LOCAL_SRC_FILES := $(LOCAL_MODULE).apk
+LOCAL_MODULE_CLASS := APPS
+LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
+
+LOCAL_CERTIFICATE := platform
+
+include $(BUILD_PREBUILT)
+
+LOCAL_PATH := $(call my-dir)
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := DMService.apk
+LOCAL_SRC_FILES := $(LOCAL_MODULE).apk
+LOCAL_MODULE_CLASS := APPS
+LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
+
+LOCAL_CERTIFICATE := platform
+
+include $(BUILD_PREBUILT)
+
+LOCAL_PATH := $(call my-dir)
+  include $(CLEAR_VARS)
+
+LOCAL_MODULE := LAWMO.apk
+LOCAL_SRC_FILES := $(LOCAL_MODULE).apk
+LOCAL_MODULE_CLASS := APPS
+LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
+
+LOCAL_CERTIFICATE := platform
+
+include $(BUILD_PREBUILT)
+
+LOCAL_PATH := $(call my-dir)
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := vzwapnpermission.apk
+LOCAL_SRC_FILES := $(LOCAL_MODULE).apk
+LOCAL_MODULE_CLASS := APPS
+LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
+
+LOCAL_CERTIFICATE := platform
+
+include $(BUILD_PREBUILT)
 
 PRODUCT_COPY_FILES += \
-    vendor/verizon/proprietary/VZWAPNLib.apk:system/app/VZWAPNLib.apk \
-    vendor/verizon/proprietary/VZWAPNService.apk:system/app/VZWAPNService.apk \
-    vendor/verizon/proprietary/IMSFramework.apk:system/app/IMSFramework.apk \
-    vendor/verizon/proprietary/libims.so:system/vendor/lib/libims.so \
-    vendor/verizon/proprietary/libims_jni.so:system/vendor/lib/libims_jni.so \
-#    vendor/verizon/proprietary/com.motorola.android.server.ims.apk:system/app/com.motorola.android.server.ims.apk \
-#    vendor/verizon/proprietary/SimManagerInvisible.apk:system/app/SimManagerInvisible.apk \
-#    vendor/verizon/proprietary/ConnMO.apk:system/app/ConnMO.apk \
-#    vendor/verizon/proprietary/DMService.apk:system/app/DMService.apk \
-#    vendor/verizon/proprietary/vzwapnpermission.apk:system/app/vzwapnpermission.apk \
-#    vendor/verizon/proprietary/libims_client_jni.so:system/vendor/lib/libims_client_jni.so \
+    vendor/verizon/proprietary/libims_client_jni.so:system/vendor/lib/libims_client_jni.so \
+
+#    vendor/verizon/proprietary/VZWAPNLib.apk:system/app/VZWAPNLib.apk \
+#    vendor/verizon/proprietary/VZWAPNService.apk:system/app/VZWAPNService.apk \
+#    vendor/verizon/proprietary/IMSFramework.apk:system/app/IMSFramework.apk \
+#    vendor/verizon/proprietary/libims.so:system/vendor/lib/libims.so \
+#    vendor/verizon/proprietary/libims_jni.so:system/vendor/lib/libims_jni.so \
