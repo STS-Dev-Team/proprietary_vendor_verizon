@@ -25,12 +25,12 @@ PRODUCT_COPY_FILES += \\
 #    vendor/verizon/proprietary/libims.so:system/vendor/lib/libims.so \
 #    vendor/verizon/proprietary/libims_jni.so:system/vendor/lib/libims_jni.so \
 
-PRODUCT_PACKAGES += \\
-    ConnMO \\
-    DMService \\
-    IMSCServer \\
-    LAWMO \\
-    vzwapnpermission
+PRODUCT_PACKAGES += \
+	ConnMO \
+	DMService \
+	IMSCServer \
+	LAWMO \
+	vzwapnpermission
 
 include \$(CLEAR_VARS)
 
