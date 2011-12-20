@@ -12,71 +12,73 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-LOCAL_PATH := $(call my-dir)
-include $(CLEAR_VARS)
+# Proprietary VZW blobs for targa
 
-LOCAL_MODULE := com.motorola.android.server.ims.apk
-LOCAL_SRC_FILES := $(LOCAL_MODULE).apk
-LOCAL_MODULE_CLASS := APPS
-LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
+LOCAL_PATH := \$(call my-dir)
 
-LOCAL_CERTIFICATE := platform
-
-include $(BUILD_PREBUILT)
-
-LOCAL_PATH := $(call my-dir)
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := ConnMO.apk
-LOCAL_SRC_FILES := $(LOCAL_MODULE).apk
-LOCAL_MODULE_CLASS := APPS
-LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
-
-LOCAL_CERTIFICATE := platform
-
-include $(BUILD_PREBUILT)
-
-LOCAL_PATH := $(call my-dir)
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := DMService.apk
-LOCAL_SRC_FILES := $(LOCAL_MODULE).apk
-LOCAL_MODULE_CLASS := APPS
-LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
-
-LOCAL_CERTIFICATE := platform
-
-include $(BUILD_PREBUILT)
-
-LOCAL_PATH := $(call my-dir)
-  include $(CLEAR_VARS)
-
-LOCAL_MODULE := LAWMO.apk
-LOCAL_SRC_FILES := $(LOCAL_MODULE).apk
-LOCAL_MODULE_CLASS := APPS
-LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
-
-LOCAL_CERTIFICATE := platform
-
-include $(BUILD_PREBUILT)
-
-LOCAL_PATH := $(call my-dir)
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := vzwapnpermission.apk
-LOCAL_SRC_FILES := $(LOCAL_MODULE).apk
-LOCAL_MODULE_CLASS := APPS
-LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
-
-LOCAL_CERTIFICATE := platform
-
-include $(BUILD_PREBUILT)
-
-PRODUCT_COPY_FILES += \
-    vendor/verizon/proprietary/libims_client_jni.so:system/vendor/lib/libims_client_jni.so \
+PRODUCT_COPY_FILES += \\
+    vendor/verizon/proprietary/libims_client_jni.so:system/vendor/lib/libims_client_jni.so
 
 #    vendor/verizon/proprietary/VZWAPNLib.apk:system/app/VZWAPNLib.apk \
 #    vendor/verizon/proprietary/VZWAPNService.apk:system/app/VZWAPNService.apk \
 #    vendor/verizon/proprietary/IMSFramework.apk:system/app/IMSFramework.apk \
 #    vendor/verizon/proprietary/libims.so:system/vendor/lib/libims.so \
 #    vendor/verizon/proprietary/libims_jni.so:system/vendor/lib/libims_jni.so \
+
+PRODUCT_PACKAGES += \\
+	IMSCServer \\
+	ConnMO \\
+	DMService \\
+	LAWMO \\
+	vzwapnpermission
+
+include \$(CLEAR_VARS)
+
+LOCAL_MODULE := com.motorola.android.server.ims.apk
+LOCAL_SRC_FILES := \$(LOCAL_MODULE).apk
+LOCAL_MODULE_CLASS := APPS
+LOCAL_MODULE_TAGS := optional
+LOCAL_CERTIFICATE := PRESIGNED
+LOCAL_MODULE_SUFFIX := \$(COMMON_ANDROID_PACKAGE_SUFFIX)
+include \$(BUILD_PREBUILT)
+
+include \$(CLEAR_VARS)
+
+LOCAL_MODULE := ConnMO.apk
+LOCAL_SRC_FILES := \$(LOCAL_MODULE).apk
+LOCAL_MODULE_CLASS := APPS
+LOCAL_MODULE_TAGS := optional
+LOCAL_CERTIFICATE := PRESIGNED
+LOCAL_MODULE_SUFFIX := \$(COMMON_ANDROID_PACKAGE_SUFFIX)
+include \$(BUILD_PREBUILT)
+
+include \$(CLEAR_VARS)
+
+LOCAL_MODULE := DMService.apk
+LOCAL_SRC_FILES := \$(LOCAL_MODULE).apk
+LOCAL_MODULE_CLASS := APPS
+LOCAL_MODULE_TAGS := optional
+LOCAL_CERTIFICATE := PRESIGNED
+LOCAL_MODULE_SUFFIX := \$(COMMON_ANDROID_PACKAGE_SUFFIX)
+include \$(BUILD_PREBUILT)
+
+  include \$(CLEAR_VARS)
+
+LOCAL_MODULE := LAWMO.apk
+LOCAL_SRC_FILES := \$(LOCAL_MODULE).apk
+LOCAL_MODULE_CLASS := APPS
+LOCAL_MODULE_TAGS := optional
+LOCAL_CERTIFICATE := PRESIGNED
+LOCAL_MODULE_SUFFIX := \$(COMMON_ANDROID_PACKAGE_SUFFIX)
+include \$(BUILD_PREBUILT)
+
+include \$(CLEAR_VARS)
+
+LOCAL_MODULE := vzwapnpermission.apk
+LOCAL_SRC_FILES := \$(LOCAL_MODULE).apk
+LOCAL_MODULE_CLASS := APPS
+LOCAL_MODULE_TAGS := optional
+LOCAL_CERTIFICATE := PRESIGNED
+LOCAL_MODULE_SUFFIX := \$(COMMON_ANDROID_PACKAGE_SUFFIX)
+
+inlude \$(BUILD_PREBUILT)
