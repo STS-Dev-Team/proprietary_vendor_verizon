@@ -28,8 +28,11 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
 	AtCmd \
 	com.motorola.android.server.ims \
+	com.motorola.atcmd.base \
+	com.motorola.atcmd.pluginMgr \
 	ConnMO \
 	DMService \
+	IMSCServer \
 	LAWMO \
 	LocationProxyDmPlugin \
 	ModemCutback \
