@@ -26,20 +26,12 @@ PRODUCT_COPY_FILES += \
 #    vendor/verizon/proprietary/libims_jni.so:system/vendor/lib/libims_jni.so \
 
 PRODUCT_PACKAGES += \
-	AtCmd \
 	com.motorola.android.server.ims \
-	com.motorola.android.telephony \
-	com.motorola.atcmd.base \
-	com.motorola.atcmd.pluginMgr \
 	ConnMO \
 	DMService \
 	IMSCServer \
-	LAWMO \
 	LocationProxyDmPlugin \
 	ModemCutback \
-	MotHstcmd \
-	MotoAtCmdEpuPlugin \
-	MotoAtCmdPlugin \
 	ProgramMenu \
 	ProgramMenuSystem \
 	vzwapnpermission \
