@@ -17,11 +17,12 @@ LOCAL_PATH:=\$(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_PREBUILT_JAVA_LIBRARIES := \
+LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := \
 	com.motorola.atcmd.base$(COMMON_JAVA_PACKAGE_SUFFIX) \
 	com.motorola.atcmd.pluginMgr$(COMMON_JAVA_PACKAGE_SUFFIX)
+	com.motorola.android.telephony$(COMMON_JAVA_PACKAGE_SUFFIX)
 LOCAL_MODULE_TAGS := optional
-include $(BUILD_HOST_PREBUILT)
+include $(BUILD_MULTI_PREBUILT)
 
 include \$(CLEAR_VARS)
 

@@ -28,6 +28,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
 	AtCmd \
 	com.motorola.android.server.ims \
+	com.motorola.android.telephony \
 	com.motorola.atcmd.base \
 	com.motorola.atcmd.pluginMgr \
 	ConnMO \
