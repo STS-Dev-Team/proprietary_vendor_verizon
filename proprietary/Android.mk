@@ -15,9 +15,6 @@
 #ifeq (\$(TARGET_DEVICE),targa)
 LOCAL_PATH:=\$(call my-dir)
 
-    vendor/verizon/proprietary/com.motorola.atcmd.base.jar:system/framework/com.motorola.atcmd.base.jar
-    vendor/verizon/proprietary/com.motorola.atcmd.pluginMgr.jar:system/framework/com.motorola.atcmd.pluginMgr.jar
-
 include $(CLEAR_VARS)
 
 LOCAL_PREBUILT_JAVA_LIBRARIES := \
