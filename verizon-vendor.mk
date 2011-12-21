@@ -28,7 +28,7 @@ PRODUCT_COPY_FILES += \\
 PRODUCT_PACKAGES += \
 	ConnMO \
 	DMService \
-	IMSCServer \
+	com.motorola.android.server.ims \
 	LAWMO \
 	LocationProxyDmPlugin \
 	ProgramMenu \
