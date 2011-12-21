@@ -17,7 +17,7 @@
 include $(all-subdir-makefiles)
 
 PRODUCT_COPY_FILES += \
-    vendor/verizon/proprietary/libims_client_jni.so:system/vendor/lib/libims_client_jni.so
+    vendor/verizon/proprietary/libims_client_jni.so:system/lib/libims_client_jni.so
 
 #    vendor/verizon/proprietary/VZWAPNLib.apk:system/app/VZWAPNLib.apk \
 #    vendor/verizon/proprietary/VZWAPNService.apk:system/app/VZWAPNService.apk \
