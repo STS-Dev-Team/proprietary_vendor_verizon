@@ -28,12 +28,12 @@ PRODUCT_COPY_FILES += \\
 PRODUCT_PACKAGES += \
 	ConnMO \
 	DMService \
-	com.motorola.android.server.ims \
+	IMSCServer \
 	LAWMO \
 	LocationProxyDmPlugin \
 	ProgramMenu \
 	ProgramMenuSystem \
-	SimManagerInvisible \
+	SimManagerActivity \
 	vzwapnpermission \
 	vzwappdirectedsmspermission
 
