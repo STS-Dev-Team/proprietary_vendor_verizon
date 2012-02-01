@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Proprietary VZW blobs for targa
+# Proprietary VZW blobs for LTE
 
-#include $(all-subdir-makefiles)
+ifeq (\$(TARGET_DEVICE),toro)
 
 PRODUCT_COPY_FILES += \
     vendor/verizon/proprietary/VZWAPNLib.apk:system/app/VZWAPNLib.apk \
@@ -23,16 +23,40 @@ PRODUCT_COPY_FILES += \
     vendor/verizon/proprietary/libims.so:system/vendor/lib/libims.so \
     vendor/verizon/proprietary/libims_jni.so:system/vendor/lib/libims_jni.so \
 
-#    vendor/verizon/proprietary/libims_client_jni.so:system/lib/libims_client_jni.so
+endif
+
+ifeq (\$(TARGET_DEVICE),targa spyder)
+
+include $(all-subdir-makefiles)
+
+PRODUCT_COPY_FILES += \
+    vendor/verizon/proprietary/libims_client_jni.so:system/lib/libims_client_jni.so
 
 
-#PRODUCT_PACKAGES += \
-#com.motorola.android.server.ims \
-#	ConnMO \
-#	DMService \
-#	IMSCServer \
-#	LocationProxyDmPlugin \
-#	ModemCutback \
-#	ProgramMenu \
-#	ProgramMenuSystem \
-#	vzwapnpermission \
+PRODUCT_PACKAGES += \
+	AppDirectedSmsService \
+	MotoImsServer \
+	MotoLocationProxy \
+	MotoLteTelephony \
+	MotoModemUtil \
+	MotoSimUiHelper \
+	VZWAPNLib \
+	VZWAPNService
+
+endif
+
+ifeq (\$(TARGET_DEVICE),targa)
+
+PRODUCT_PACKAGES += \
+	TargaProgramMenu \
+	TargaProgramMenuSystem \
+
+endif
+
+ifeq (\$(TARGET_DEVICE),spyder)
+
+PRODUCT_PACKAGES += \
+	ProgramMenu \
+	ProgramMenuSystem \
+
+endif
