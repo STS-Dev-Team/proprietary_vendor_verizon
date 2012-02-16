@@ -23,11 +23,13 @@ import android.util.Log;
 import android.view.Window;
 import com.android.internal.telephony.CommandsInterface;
 import com.android.internal.telephony.IccCard;
+import com.android.internal.telephony.IccCardApplication;
 import com.android.internal.telephony.IccCardApplication.AppType;
 import com.android.internal.telephony.IccIoResult;
 import com.android.internal.telephony.Phone;
 import com.android.internal.telephony.PhoneFactory;
 import com.android.internal.telephony.PhoneProxy;
+import android.provider.Settings;
 import java.lang.reflect.Field;
 
 public class ShowSimStatusActivity extends Activity
