@@ -209,31 +209,27 @@ public class ShowSimStatusActivity extends Activity
       }
       catch (IllegalAccessException localIllegalAccessException)
       {
-        while (true)
-        {
           Log.e("MotoSimUiHelper", "Cannot acess CommandsInterface");
           finish();
-        }
+          return;
       }
     }
     catch (NoSuchFieldException localNoSuchFieldException)
     {
-      while (true)
-      {
         Log.e("MotoSimUiHelper", "No CommandsInterface found");
         finish();
-        continue;
-        if (i == 0)
-        {
-          Log.d("MotoSimUiHelper", "SIM card is a RUIM card");
-          showDialog(this.mContext, 0);
-          continue;
-        }
-        if (2 != i)
-          continue;
-        Log.d("MotoSimUiHelper", "This status should be ignore, don't show any screen, exit here");
-        finish();
-      }
+        return;
+    }
+    if (i == 0)
+    {
+      Log.d("MotoSimUiHelper", "SIM card is a RUIM card");
+      showDialog(this.mContext, 0);
+      return;
+    }
+    else {
+      if (2 != i) return;
+      Log.d("MotoSimUiHelper", "This status should be ignore, don't show any screen, exit here");
+      finish();
     }
   }
 
