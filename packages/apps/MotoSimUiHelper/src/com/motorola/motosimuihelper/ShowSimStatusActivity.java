@@ -59,7 +59,7 @@ public class ShowSimStatusActivity extends Activity
             {
               Log.d("MotoSimUiHelper", "EUTRAN is avaliable");
               String lineNum = ShowSimStatusActivity.this.mPhone.getLine1Number();
-              if ((lineNum != null) && (!linNum.startsWith("00000")))
+              if ((lineNum != null) && (!lineNum.startsWith("00000")))
               {
                 Log.d("MotoSimUiHelper", "SIM is a valid activated Verizon 4G SIM");
                 ShowSimStatusActivity.this.updateNetworkMode();
@@ -170,7 +170,7 @@ public class ShowSimStatusActivity extends Activity
     if ((i != 7) && (j != 2))
     {
       Intent localIntent = new Intent("com.motorola.motosimuihelper.UPDATE_NETWORK_MODE");
-      localIntent.setFlags(276824064);
+      localIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
       Log.d("MotoSimUiHelper", "start UpdateNetworkModeActivity");
       startActivity(localIntent);
     }
@@ -184,6 +184,7 @@ public class ShowSimStatusActivity extends Activity
 
   protected void onCreate(Bundle paramBundle)
   {
+    int i;
     super.onCreate(paramBundle);
     requestWindowFeature(1);
     this.mContext = this;
@@ -219,7 +220,6 @@ public class ShowSimStatusActivity extends Activity
     {
       while (true)
       {
-        int i;
         Log.e("MotoSimUiHelper", "No CommandsInterface found");
         finish();
         continue;
@@ -236,6 +236,7 @@ public class ShowSimStatusActivity extends Activity
       }
     }
   }
+
 
   public void updateNotification(int paramInt)
   {
