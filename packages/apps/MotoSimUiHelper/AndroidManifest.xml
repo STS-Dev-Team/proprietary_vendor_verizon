@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest android:sharedUserId="android.uid.phone" android:versionCode="13" android:versionName="3.2.4-221360" package="com.motorola.motosimuihelper"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-sdk android:minSdkVersion="13" android:targetSdkVersion="15" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.STATUS_BAR" />
+    <uses-permission android:name="android.permission.PERFORM_CDMA_PROVISIONING" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <application android:allowClearUserData="false" android:process="com.android.phone">
+        <receiver android:name=".PhoneBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.SIM_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+        <activity android:theme="android:style/Theme.Holo.Dialog" android:name=".ShowSimStatusActivity" android:excludeFromRecents="true" android:configChanges="mcc|mnc|locale|keyboardHidden|orientation|fontScale">
+            <intent-filter>
+                <action android:name="com.motorola.motosimuihelper.SIM_SHOW_INTENT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:theme="android:style/Theme.Holo.Dialog" android:name=".UpdateNetworkModeActivity" android:exported="true" android:excludeFromRecents="true" android:configChanges="mcc|mnc|locale|keyboardHidden|orientation|fontScale">
+            <intent-filter>
+                <action android:name="com.motorola.motosimuihelper.UPDATE_NETWORK_MODE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
