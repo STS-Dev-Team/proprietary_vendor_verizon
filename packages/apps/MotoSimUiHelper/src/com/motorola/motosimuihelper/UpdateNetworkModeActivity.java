@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.Window;
 import com.android.internal.telephony.Phone;
 import com.android.internal.telephony.PhoneFactory;
+import android.provider.Settings;
 
 public class UpdateNetworkModeActivity extends Activity
 {
