@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Proprietary VZW blobs for LTE
+# Proprietary VZW blobs for Global Phone
 
 include $(all-subdir-makefiles)
 
-PRODUCT_PACKAGES += \
-	GlobalNwSwitch \
+#PRODUCT_PACKAGES += \
+#	GlobalNwSwitch \
