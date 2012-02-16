@@ -17,7 +17,7 @@ public class PhoneBroadcastReceiver extends BroadcastReceiver
     {
       Log.d("MotoSimUiHelper", "Receive sim loaded, start to check sim status");
       localObject = new Intent("com.motorola.motosimuihelper.SIM_SHOW_INTENT");
-      localIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+      ((Intent)localObject).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
       paramContext.startActivity((Intent)localObject);
     }
   }
