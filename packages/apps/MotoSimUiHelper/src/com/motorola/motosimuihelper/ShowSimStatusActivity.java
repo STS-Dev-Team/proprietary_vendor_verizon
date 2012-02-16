@@ -45,12 +45,12 @@ public class ShowSimStatusActivity extends Activity
       case 1:
         Log.d("MotoSimUiHelper", "Handle EVENT_READ_RECORD_DONE Message");
         AsyncResult localAsyncResult = (AsyncResult)paramMessage.obj;
-        Object localObject = (IccIoResult)localAsyncResult.result;
+        IccIoResult ioResult = (IccIoResult)localAsyncResult.result;
         if (localAsyncResult.exception == null)
         {
-          if (((IccIoResult)localObject).getException() == null)
+          if (ioResult.getException() == null)
           {
-            if ((0x40 & localObject.payload[3]) == 0)
+            if ((0x40 & ioResult.payload[3]) == 0)
             {
               Log.d("MotoSimUiHelper", "EUTRAN is not avaliable");
               ShowSimStatusActivity.this.showDialog(ShowSimStatusActivity.this.mContext, 0);
@@ -58,8 +58,8 @@ public class ShowSimStatusActivity extends Activity
             else
             {
               Log.d("MotoSimUiHelper", "EUTRAN is avaliable");
-              localObject = ShowSimStatusActivity.this.mPhone.getLine1Number();
-              if ((localObject != null) && (!((String)localObject).startsWith("00000")))
+              String lineNum = ShowSimStatusActivity.this.mPhone.getLine1Number();
+              if ((lineNum != null) && (!linNum.startsWith("00000")))
               {
                 Log.d("MotoSimUiHelper", "SIM is a valid activated Verizon 4G SIM");
                 ShowSimStatusActivity.this.updateNetworkMode();
@@ -85,13 +85,13 @@ public class ShowSimStatusActivity extends Activity
 
   private int checkSimStatus()
   {
-    Object localObject = (TelephonyManager)this.mPhone.getContext().getSystemService("phone");
-    Log.d("MotoSimUiHelper", "SIM operator " + ((TelephonyManager)localObject).getSimOperator());
-    localObject = ((TelephonyManager)localObject).getSimOperator();
+    TelephonyManager tm = (TelephonyManager)this.mPhone.getContext().getSystemService("phone");
+    Log.d("MotoSimUiHelper", "SIM operator " + tm.getSimOperator());
+    String simOperator = tm.getSimOperator();
     int i;
-    if (localObject != null)
+    if (simOperator != null)
     {
-      if ((((String)localObject).equals("311480")) || (((String)localObject).equals("20404")))
+      if ((simOperator.equals("311480")) || (simOperator.equals("20404")))
       {
         if (!this.mPhone.needsOtaServiceProvisioning())
         {
