@@ -147,9 +147,9 @@ public class ShowSimStatusActivity extends Activity
         }
       }).create();
       updateNotification(1);
-      localAlertDialog.getWindow().setType(2003);
+      localAlertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
       if (!paramContext.getResources().getBoolean(17891331))
-        localAlertDialog.getWindow().addFlags(4);
+        localAlertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAGS_CHANGED);
       localAlertDialog.show();
     }
   }
@@ -245,15 +245,15 @@ public class ShowSimStatusActivity extends Activity
       default:
         break;
       case 0:
-        localNotification = new Notification(2130837504, getString(2130903044), System.currentTimeMillis());
+        localNotification = new Notification(R.drawable.unknownsim, getString(R.string.wrong_sim_notice), System.currentTimeMillis());
         localNotification.flags = 2;
-        localNotification.setLatestEventInfo(this.mContext, getString(2130903044), null, null);
+        localNotification.setLatestEventInfo(this.mContext, getString(R.string.wrong_sim_notice), null, null);
         localNotificationManager.notify(0, localNotification);
         break;
       case 1:
-        localNotification = new Notification(2130837504, getString(2130903041), System.currentTimeMillis());
+        localNotification = new Notification(R.drawable.unknownsim, getString(R.string.wrong_operator_notice), System.currentTimeMillis());
         localNotification.flags = 2;
-        localNotification.setLatestEventInfo(this.mContext, getString(2130903041), null, null);
+        localNotification.setLatestEventInfo(this.mContext, getString(R.string.wrong_operator_notice), null, null);
         localNotificationManager.notify(0, localNotification);
       }
     }

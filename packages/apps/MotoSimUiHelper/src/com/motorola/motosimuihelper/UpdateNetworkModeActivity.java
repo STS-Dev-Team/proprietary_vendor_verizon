@@ -56,23 +56,23 @@ public class UpdateNetworkModeActivity extends Activity
     ComponentName localComponentName = new ComponentName("com.motorola.motosimuihelper", "com.motorola.motosimuihelper.UpdateNetworkModeActivity");
     if (localPackageManager.getComponentEnabledSetting(localComponentName) != 2)
     {
-      AlertDialog localAlertDialog = new AlertDialog.Builder(this.mContext).setIconAttribute(16843605).setTitle(2130903046).setMessage(2130903047).setCancelable(false).setPositiveButton(2130903049, new DialogInterface.OnClickListener()
+      AlertDialog localAlertDialog = new AlertDialog.Builder(this.mContext).setIconAttribute(android.R.attr.alertDialogIcon).setTitle(R.string.network_mode_title).setMessage(R.string.network_mode).setCancelable(false).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
       {
         public void onClick(DialogInterface paramDialogInterface, int paramInt)
         {
           Settings.Secure.putInt(UpdateNetworkModeActivity.this.mPhone.getContext().getContentResolver(), "preferred_network_mode", 7);
           UpdateNetworkModeActivity.this.mPhone.setPreferredNetworkType(7, UpdateNetworkModeActivity.this.mHandler.obtainMessage(1));
         }
-      }).setNegativeButton(2130903050, new DialogInterface.OnClickListener()
+      }).setNegativeButton(R.string.yes, new DialogInterface.OnClickListener()
       {
         public void onClick(DialogInterface paramDialogInterface, int paramInt)
         {
           UpdateNetworkModeActivity.this.finish();
         }
       }).create();
-      localAlertDialog.getWindow().setType(2003);
+      localAlertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
       if (!this.mContext.getResources().getBoolean(17891331))
-        localAlertDialog.getWindow().addFlags(4);
+        localAlertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAGS_CHANGED);
       localAlertDialog.show();
       localPackageManager.setComponentEnabledSetting(localComponentName, 2, 1);
     }
