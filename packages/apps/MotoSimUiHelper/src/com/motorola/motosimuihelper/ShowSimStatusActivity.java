@@ -129,7 +129,7 @@ public class ShowSimStatusActivity extends Activity
     switch (paramInt)
     {
     case 0:
-      localAlertDialog = new AlertDialog.Builder(paramContext).setIconAttribute(16843605).setTitle(2130903043).setMessage(2130903045).setCancelable(false).setPositiveButton(2130903048, new DialogInterface.OnClickListener()
+      localAlertDialog = new AlertDialog.Builder(paramContext).setIconAttribute(android.R.attr.alertDialogIcon).setTitle(R.string.wrong_sim_title).setMessage(R.string.wrong_sim).setCancelable(false).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
       {
         public void onClick(DialogInterface paramDialogInterface, int paramInt)
         {
@@ -139,7 +139,7 @@ public class ShowSimStatusActivity extends Activity
       updateNotification(0);
       break;
     case 1:
-      localAlertDialog = new AlertDialog.Builder(paramContext).setIconAttribute(16843605).setTitle(2130903040).setMessage(2130903042).setCancelable(false).setPositiveButton(2130903048, new DialogInterface.OnClickListener()
+      localAlertDialog = new AlertDialog.Builder(paramContext).setIconAttribute(android.R.attr.alertDialogIcon).setTitle(R.string.wrong_operator_title).setMessage(R.string.wrong_operator).setCancelable(false).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
       {
         public void onClick(DialogInterface paramDialogInterface, int paramInt)
         {
