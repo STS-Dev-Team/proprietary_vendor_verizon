@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.view.WindowManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
