@@ -28,7 +28,7 @@ PRODUCT_PACKAGES += \
 	MotoLteTelephony \
 	MotoModemUtil \
 	MotoSimUiHelper \
-	TargaProgramMenu \
-	TargaProgramMenuSystem \
+	ProgramMenu \
+	ProgramMenuSystem \
 	VZWAPNLib \
 	VZWAPNService
