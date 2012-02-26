@@ -9,10 +9,13 @@
     <uses-permission android:name="android.permission.STATUS_BAR" />
     <uses-permission android:name="android.permission.PERFORM_CDMA_PROVISIONING" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <application android:allowClearUserData="false" android:process="com.android.phone">
         <receiver android:name=".PhoneBroadcastReceiver">
             <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.SIM_STATE_CHANGED" />
+                <action android:name="android.intent.action.RADIO_TECHNOLOGY" />
             </intent-filter>
         </receiver>
         <activity android:theme="@style/SimDialog" android:name=".ShowSimStatusActivity" android:excludeFromRecents="true" android:configChanges="mcc|mnc|locale|keyboardHidden|orientation|fontScale">
