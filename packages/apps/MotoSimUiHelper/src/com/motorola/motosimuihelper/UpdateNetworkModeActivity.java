@@ -3,6 +3,7 @@ package com.motorola.motosimuihelper;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.view.WindowManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,6 +24,7 @@ import com.android.internal.telephony.PhoneFactory;
 import com.android.internal.telephony.RILConstants;
 import android.provider.Settings;
 
+<<<<<<< HEAD
 public class UpdateNetworkModeActivity extends Activity {
     private Context mContext = null;
 
@@ -79,6 +81,7 @@ public class UpdateNetworkModeActivity extends Activity {
             localPackageManager.setComponentEnabledSetting(localComponentName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
 
         }
+
     }
 }
 
