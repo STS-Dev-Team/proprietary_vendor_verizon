@@ -32,7 +32,6 @@ import com.android.internal.telephony.IccFileHandler;
 import com.android.internal.telephony.Phone;
 import com.android.internal.telephony.PhoneFactory;
 import com.android.internal.telephony.PhoneProxy;
-import com.android.internal.telephony.RILConstants;
 import android.provider.Settings;
 import java.lang.reflect.Field;
 
@@ -94,12 +93,12 @@ public class ShowSimStatusActivity extends Activity {
                         Log.e("MotoSimUiHelper", "Set LTE mode update fail");
                     else
                         Log.e("MotoSimUiHelper", "Set LTE mode update success");
-                    int i = Settings.Secure.getInt(ShowSimStatusActivity.this.mContext.getContentResolver(), Settings.Secure.PREFERRED_NETWORK_MODE, RILConstants.NETWORK_MODE_WCDMA_PREF);
-                    if (i == RILConstants.NETWORK_MODE_GLOBAL) {
-                        ShowSimStatusActivity.this.finish();
+                    int i = Settings.Secure.getInt(ShowSimStatusActivity.this.mContext.getContentResolver(), Settings.Secure.PREFERRED_NETWORK_MODE, Phone.NT_MODE_WCDMA_ONLY);
+                    if (i != Phone.NT_MODE_GLOBAL) {
+                        ShowSimStatusActivity.this.updateNetworkModePreferred();
                     }
                     else {
-                        ShowSimStatusActivity.this.updateNetworkModePreferred();
+                        ShowSimStatusActivity.this.finish();
                     }
 
                 case 4:
@@ -111,6 +110,7 @@ public class ShowSimStatusActivity extends Activity {
 
             }
         }
+
     };
 
     private Phone mPhone = null;
@@ -194,13 +194,13 @@ public class ShowSimStatusActivity extends Activity {
         PackageManager localPackageManager = getPackageManager();
         ComponentName localComponentName = new ComponentName("com.motorola.motosimuihelper", "com.motorola.motosimuihelper.UpdateNetworkModeActivity");
         int j = localPackageManager.getComponentEnabledSetting(localComponentName);
-        int i = Settings.Secure.getInt(this.mContext.getContentResolver(), Settings.Secure.PREFERRED_NETWORK_MODE, RILConstants.NETWORK_MODE_WCDMA_PREF);
+        int i = Settings.Secure.getInt(this.mContext.getContentResolver(), Settings.Secure.PREFERRED_NETWORK_MODE, Phone.NT_MODE_WCDMA_ONLY);
         Log.d("MotoSimUiHelper", "Current Preferred network mode is " + i);
-        if ((i == RILConstants.NETWORK_MODE_GLOBAL) || (i == RILConstants.NETWORK_MODE_CDMA)) {
+        if ((i == Phone.NT_MODE_GLOBAL) || (i == Phone.NT_MODE_CDMA)) {
             Log.d("MotoSimUiHelper", "The preferred network mode is GLOBAL or CDMA, disable the updateNetworkMode component");
             localPackageManager.setComponentEnabledSetting(localComponentName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
         }
-        if (((i != RILConstants.NETWORK_MODE_GLOBAL) && (i != RILConstants.NETWORK_MODE_CDMA)) && (j != PackageManager.COMPONENT_ENABLED_STATE_DISABLED)) {
+        if (((i != Phone.NT_MODE_GLOBAL) && (i != Phone.NT_MODE_CDMA)) && (j != PackageManager.COMPONENT_ENABLED_STATE_DISABLED)) {
             Intent localIntent = new Intent("com.motorola.motosimuihelper.UPDATE_NETWORK_MODE");
             localIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
             Log.d("MotoSimUiHelper", "start UpdateNetworkModeActivity");
@@ -208,19 +208,14 @@ public class ShowSimStatusActivity extends Activity {
         }
     }
 
-    private void updateNetworkModeGSM() {
-        Log.d("MotoSimUiHelper", "updateNetworkModeGSM");
-        mPhone.setPreferredNetworkType(RILConstants.NETWORK_MODE_GSM_ONLY, mHandler.obtainMessage(2));
-    }
-
     private void updateNetworkModeLTE() {
         Log.d("MotoSimUiHelper", "updateNetworkModeLTE");
-        mPhone.setPreferredNetworkType(RILConstants.NETWORK_MODE_GLOBAL, mHandler.obtainMessage(3));
+        mPhone.setPreferredNetworkType(Phone.NT_MODE_GLOBAL, mHandler.obtainMessage(3));
     }
 
     private void updateNetworkModePreferred() {
         Log.d("MotoSimUiHelper", "updateNetworkModePreferred");
-        int i = Settings.Secure.getInt(this.mContext.getContentResolver(), Settings.Secure.PREFERRED_NETWORK_MODE, RILConstants.NETWORK_MODE_GLOBAL);
+        int i = Settings.Secure.getInt(mContext.getContentResolver(), Settings.Secure.PREFERRED_NETWORK_MODE, Phone.NT_MODE_GLOBAL);
         mPhone.setPreferredNetworkType(i, mHandler.obtainMessage(4));
     }
 
@@ -248,9 +243,10 @@ public class ShowSimStatusActivity extends Activity {
                     this.mCM = ((CommandsInterface)localField.get(localPhoneProxy));
                     i = checkSimStatus();
                     if (1 == i) {
-                        int j = Settings.Secure.getInt(this.mContext.getContentResolver(), Settings.Secure.PREFERRED_NETWORK_MODE, RILConstants.NETWORK_MODE_GSM_ONLY);
-                        if (j != RILConstants.NETWORK_MODE_GSM_ONLY) {
-                            updateNetworkModeGSM();
+                        int j = Settings.Secure.getInt(this.mContext.getContentResolver(), Settings.Secure.PREFERRED_NETWORK_MODE, Phone.NT_MODE_GSM_ONLY);
+                        if (j != Phone.NT_MODE_GSM_ONLY) {
+                            Log.d("MotoSimUiHelper", "updateNetworkModeGSM");
+                            mPhone.setPreferredNetworkType(Phone.NT_MODE_GSM_ONLY, mHandler.obtainMessage(2));
                         }
                         else {
                             updateNetworkMode();
