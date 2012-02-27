@@ -56,6 +56,7 @@ public class UpdateNetworkModeActivity extends Activity {
 
         if (localPackageManager.getComponentEnabledSetting(localComponentName) != PackageManager.COMPONENT_ENABLED_STATE_DISABLED) {
 
+/*
             AlertDialog localAlertDialog = new AlertDialog.Builder(this.mContext).setIconAttribute(android.R.attr.alertDialogIcon).setTitle(R.string.network_mode_title).setMessage(R.string.network_mode).setCancelable(false).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 
                 public void onClick(DialogInterface paramDialogInterface, int paramInt) {
@@ -72,11 +73,12 @@ public class UpdateNetworkModeActivity extends Activity {
             }).create();
 
             localAlertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-            /* FIXME-HASH: "config_sf_slowBlur" is set default to true, so effectively disable the line below */
+            # FIXME-HASH: "config_sf_slowBlur" is set default to true, so effectively disable the line below
             if (!true)
                 localAlertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
 
             localAlertDialog.show();
+*/
             localPackageManager.setComponentEnabledSetting(localComponentName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
 
         }

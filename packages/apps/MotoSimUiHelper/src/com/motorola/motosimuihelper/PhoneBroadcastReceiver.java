@@ -23,6 +23,13 @@ public class PhoneBroadcastReceiver extends BroadcastReceiver {
             appIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
             paramContext.startActivity(appIntent);
         }
+        else
+        if (action.equals("android.intent.action.RADIO_TECHNOLOGY")) {
+            Log.d("MotoSimUiHelper", "Receive RADIO_TECHNOLOGY triggering NETWORK STATE CHANGE");
+            Intent appIntent = new Intent("com.motorola.motosimuihelper.SIM_SHOW_INTENT");
+            appIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            paramContext.startActivity(appIntent);
+        }
         else {
             String iccState = extraBundle.getString(IccCard.INTENT_KEY_ICC_STATE);
             if ((iccState != null) && (iccState.equals(IccCard.INTENT_VALUE_ICC_LOADED))) {

@@ -64,9 +64,9 @@ public class ShowSimStatusActivity extends Activity {
                                 String lineNum = ShowSimStatusActivity.this.mPhone.getLine1Number();
                                 if ((lineNum != null) && (!lineNum.startsWith("00000"))) {
                                     Log.d("MotoSimUiHelper", "SIM is a valid activated Verizon 4G SIM");
-                                    ShowSimStatusActivity.this.updateNetworkMode();
+                                    ShowSimStatusActivity.this.updateNetworkModeLTE();
                                 }
-                                ShowSimStatusActivity.this.finish();
+                                // ShowSimStatusActivity.this.finish();
                             }
                         }
                         else {
@@ -78,35 +78,45 @@ public class ShowSimStatusActivity extends Activity {
                     }
                     else {
                         Log.e("MotoSimUiHelper", "read icc i/o exception");
-                        ShowSimStatusActivity.this.finish();
+                        // ShowSimStatusActivity.this.finish();
                     }
+                    break;
 
                 case 2:
-                    if (((AsyncResult)paramMessage.obj).exception != null)
+                    if (((AsyncResult)paramMessage.obj).exception != null) {
                         Log.e("MotoSimUiHelper", "Set GSM mode update fail");
-                    else
-                        Log.e("MotoSimUiHelper", "Set GSM mode update success");
-                    ShowSimStatusActivity.this.updateNetworkModeLTE();
-
-                case 3:
-                    if (((AsyncResult)paramMessage.obj).exception != null)
-                        Log.e("MotoSimUiHelper", "Set LTE mode update fail");
-                    else
-                        Log.e("MotoSimUiHelper", "Set LTE mode update success");
-                    int i = Settings.Secure.getInt(ShowSimStatusActivity.this.mContext.getContentResolver(), Settings.Secure.PREFERRED_NETWORK_MODE, Phone.NT_MODE_WCDMA_ONLY);
-                    if (i != Phone.NT_MODE_GLOBAL) {
-                        ShowSimStatusActivity.this.updateNetworkModePreferred();
+                        // ShowSimStatusActivity.this.finish();
                     }
                     else {
-                        ShowSimStatusActivity.this.finish();
+                        Log.e("MotoSimUiHelper", "Set GSM mode update success");
+                        ShowSimStatusActivity.this.updateNetworkModeLTE();
                     }
+                    break;
+
+                case 3:
+                    if (((AsyncResult)paramMessage.obj).exception != null) {
+                        Log.e("MotoSimUiHelper", "Set LTE mode update fail");
+                        // ShowSimStatusActivity.this.finish();
+                    }
+                    else {
+                        Log.e("MotoSimUiHelper", "Set LTE mode update success");
+                        int i = Settings.Secure.getInt(ShowSimStatusActivity.this.mContext.getContentResolver(), Settings.Secure.PREFERRED_NETWORK_MODE, Phone.NT_MODE_WCDMA_ONLY);
+                        if (i != Phone.NT_MODE_GLOBAL) {
+                            ShowSimStatusActivity.this.updateNetworkModePreferred(i);
+                        }
+                        else {
+                            // ShowSimStatusActivity.this.finish();
+                        }
+                    }
+                    break;
 
                 case 4:
                     if (((AsyncResult)paramMessage.obj).exception != null)
                         Log.e("MotoSimUiHelper", "Set preferred mode update fail");
                     else
                         Log.e("MotoSimUiHelper", "Set preferred mode update success");
-                    ShowSimStatusActivity.this.finish();
+                    // ShowSimStatusActivity.this.finish();
+                    break;
 
             }
         }
@@ -149,6 +159,7 @@ public class ShowSimStatusActivity extends Activity {
         return i;
     }
 
+/*
     private void showDialog(Context paramContext, int paramInt) {
         AlertDialog localAlertDialog;
 
@@ -164,7 +175,6 @@ public class ShowSimStatusActivity extends Activity {
                 }).create();
                 updateNotification(0);
                 localAlertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-                /* FIXME-HASH: "config_sf_slowBlur" is set default to true, so effectively disable the line below */
                 if (!true)
                     localAlertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
                 localAlertDialog.show();
@@ -180,7 +190,6 @@ public class ShowSimStatusActivity extends Activity {
                 }).create();
                 updateNotification(1);
                 localAlertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-                /* FIXME-HASH: "config_sf_slowBlur" is set default to true, so effectively disable the line below */
                 if (!true)
                     localAlertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
                 localAlertDialog.show();
@@ -188,6 +197,7 @@ public class ShowSimStatusActivity extends Activity {
         }
 
     }
+*/
 
     private void updateNetworkMode() {
         Log.d("MotoSimUiHelper", "updateNetworkMode");
@@ -213,10 +223,9 @@ public class ShowSimStatusActivity extends Activity {
         mPhone.setPreferredNetworkType(Phone.NT_MODE_GLOBAL, mHandler.obtainMessage(3));
     }
 
-    private void updateNetworkModePreferred() {
+    private void updateNetworkModePreferred(int networkMode) {
         Log.d("MotoSimUiHelper", "updateNetworkModePreferred");
-        int i = Settings.Secure.getInt(mContext.getContentResolver(), Settings.Secure.PREFERRED_NETWORK_MODE, Phone.NT_MODE_GLOBAL);
-        mPhone.setPreferredNetworkType(i, mHandler.obtainMessage(4));
+        mPhone.setPreferredNetworkType(networkMode, mHandler.obtainMessage(4));
     }
 
     public void onConfigurationChanged(Configuration paramConfiguration) {
@@ -242,19 +251,21 @@ public class ShowSimStatusActivity extends Activity {
                 try {
                     this.mCM = ((CommandsInterface)localField.get(localPhoneProxy));
                     i = checkSimStatus();
+                    Log.d("MotoSimUiHelper", "onCreate::CheckSimStatus == " + i);
                     if (1 == i) {
                         int j = Settings.Secure.getInt(this.mContext.getContentResolver(), Settings.Secure.PREFERRED_NETWORK_MODE, Phone.NT_MODE_GSM_ONLY);
+                        Log.d("MotoSimUiHelper", "onCreate::PREFERRED_NETWORK_MODE == " + j);
                         if (j != Phone.NT_MODE_GSM_ONLY) {
                             Log.d("MotoSimUiHelper", "updateNetworkModeGSM");
                             mPhone.setPreferredNetworkType(Phone.NT_MODE_GSM_ONLY, mHandler.obtainMessage(2));
                         }
                         else {
-                            updateNetworkMode();
+                            updateNetworkModeLTE();
                         }
-                        /*
+/*
                         Log.d("MotoSimUiHelper", "SIM card is from an unknown operator, show the wrong operator screen");
                         showDialog(this.mContext, 1);
-                        */
+*/
                         finish();
                     }
                 }
@@ -272,8 +283,10 @@ public class ShowSimStatusActivity extends Activity {
 
             if (i == 0) {
                 Log.d("MotoSimUiHelper", "SIM card is a RUIM card");
+/*
                 showDialog(this.mContext, 0);
                 return;
+*/
             }
             else {
                 if (i != 2) return;
@@ -285,6 +298,7 @@ public class ShowSimStatusActivity extends Activity {
     }
 
 
+/*
     public void updateNotification(int paramInt) {
         NotificationManager localNotificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
         if (localNotificationManager != null) {
@@ -311,5 +325,6 @@ public class ShowSimStatusActivity extends Activity {
             }
         }
     }
+*/
 }
 
