@@ -24,7 +24,6 @@ import com.android.internal.telephony.PhoneFactory;
 import com.android.internal.telephony.RILConstants;
 import android.provider.Settings;
 
-<<<<<<< HEAD
 public class UpdateNetworkModeActivity extends Activity {
     private Context mContext = null;
 

@@ -56,7 +56,9 @@ public class ShowSimStatusActivity extends Activity {
                         if (ioResult.getException() == null) {
                             if ((0x40 & ioResult.payload[3]) == 0) {
                                 Log.e("MotoSimUiHelper", "EUTRAN is not avaliable");
+/* Removing Dialog
                                 ShowSimStatusActivity.this.showDialog(ShowSimStatusActivity.this.mContext, 0);
+*/
                             }
                             else {
                                 Log.d("MotoSimUiHelper", "EUTRAN is avaliable");
@@ -70,7 +72,9 @@ public class ShowSimStatusActivity extends Activity {
                         }
                         else {
                             Log.e("MotoSimUiHelper", "EFHPLMNWACT not accessible.");
+/* Removing Dialog
                             ShowSimStatusActivity.this.showDialog(ShowSimStatusActivity.this.mContext, 0);
+*/
                         }
                     }
                     else {
@@ -83,15 +87,27 @@ public class ShowSimStatusActivity extends Activity {
                         Log.e("MotoSimUiHelper", "Set GSM mode update fail");
                     else
                         Log.e("MotoSimUiHelper", "Set GSM mode update success");
-                    ShowSimStatusActivity.this.updateNetworkModePreferred();
+                    ShowSimStatusActivity.this.updateNetworkModeLTE();
 
                 case 3:
+                    if (((AsyncResult)paramMessage.obj).exception != null)
+                        Log.e("MotoSimUiHelper", "Set LTE mode update fail");
+                    else
+                        Log.e("MotoSimUiHelper", "Set LTE mode update success");
+                    int i = Settings.Secure.getInt(ShowSimStatusActivity.this.mContext.getContentResolver(), Settings.Secure.PREFERRED_NETWORK_MODE, RILConstants.NETWORK_MODE_WCDMA_PREF);
+                    if (i == RILConstants.NETWORK_MODE_GLOBAL) {
+                        ShowSimStatusActivity.this.finish();
+                    }
+                    else {
+                        ShowSimStatusActivity.this.updateNetworkModePreferred();
+                    }
+
+                case 4:
                     if (((AsyncResult)paramMessage.obj).exception != null)
                         Log.e("MotoSimUiHelper", "Set preferred mode update fail");
                     else
                         Log.e("MotoSimUiHelper", "Set preferred mode update success");
                     ShowSimStatusActivity.this.finish();
-
 
             }
         }
@@ -180,11 +196,11 @@ public class ShowSimStatusActivity extends Activity {
         int j = localPackageManager.getComponentEnabledSetting(localComponentName);
         int i = Settings.Secure.getInt(this.mContext.getContentResolver(), Settings.Secure.PREFERRED_NETWORK_MODE, RILConstants.NETWORK_MODE_WCDMA_PREF);
         Log.d("MotoSimUiHelper", "Current Preferred network mode is " + i);
-        if (i == RILConstants.NETWORK_MODE_GLOBAL) {
-            Log.d("MotoSimUiHelper", "The preferred network mode is GLOBAL, disable the updateNetworkMode component");
+        if ((i == RILConstants.NETWORK_MODE_GLOBAL) || (i == RILConstants.NETWORK_MODE_CDMA)) {
+            Log.d("MotoSimUiHelper", "The preferred network mode is GLOBAL or CDMA, disable the updateNetworkMode component");
             localPackageManager.setComponentEnabledSetting(localComponentName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
         }
-        if ((i != RILConstants.NETWORK_MODE_GLOBAL) && (j != PackageManager.COMPONENT_ENABLED_STATE_DISABLED)) {
+        if (((i != RILConstants.NETWORK_MODE_GLOBAL) && (i != RILConstants.NETWORK_MODE_CDMA)) && (j != PackageManager.COMPONENT_ENABLED_STATE_DISABLED)) {
             Intent localIntent = new Intent("com.motorola.motosimuihelper.UPDATE_NETWORK_MODE");
             localIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
             Log.d("MotoSimUiHelper", "start UpdateNetworkModeActivity");
@@ -197,10 +213,15 @@ public class ShowSimStatusActivity extends Activity {
         mPhone.setPreferredNetworkType(RILConstants.NETWORK_MODE_GSM_ONLY, mHandler.obtainMessage(2));
     }
 
+    private void updateNetworkModeLTE() {
+        Log.d("MotoSimUiHelper", "updateNetworkModeLTE");
+        mPhone.setPreferredNetworkType(RILConstants.NETWORK_MODE_GLOBAL, mHandler.obtainMessage(3));
+    }
+
     private void updateNetworkModePreferred() {
         Log.d("MotoSimUiHelper", "updateNetworkModePreferred");
         int i = Settings.Secure.getInt(this.mContext.getContentResolver(), Settings.Secure.PREFERRED_NETWORK_MODE, RILConstants.NETWORK_MODE_GLOBAL);
-        mPhone.setPreferredNetworkType(i, mHandler.obtainMessage(3));
+        mPhone.setPreferredNetworkType(i, mHandler.obtainMessage(4));
     }
 
     public void onConfigurationChanged(Configuration paramConfiguration) {
