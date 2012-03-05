@@ -16,9 +16,8 @@
 
 include $(all-subdir-makefiles)
 
-#stop the data drops for now
-#PRODUCT_COPY_FILES += \
-#    vendor/verizon/proprietary/libims_client_jni.so:system/lib/libims_client_jni.so
+PRODUCT_COPY_FILES += \
+    vendor/verizon/proprietary/libims_client_jni.so:system/lib/libims_client_jni.so
 
 
 PRODUCT_PACKAGES += \

@@ -14,21 +14,14 @@
         <receiver android:name=".PhoneBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.SIM_STATE_CHANGED" />
-                <action android:name="android.intent.action.RADIO_TECHNOLOGY" />
             </intent-filter>
         </receiver>
-        <activity android:theme="@style/SimDialog" android:name=".ShowSimStatusActivity" android:excludeFromRecents="true" android:configChanges="mcc|mnc|locale|keyboardHidden|orientation|fontScale">
+        <service android:name=".ShowSimStatusActivity">
             <intent-filter>
+                <action android:name="com.motorola.motosimuihelper.START_SERVICE" />
                 <action android:name="com.motorola.motosimuihelper.SIM_SHOW_INTENT" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </activity>
-        <activity android:theme="@style/SimDialog" android:name=".UpdateNetworkModeActivity" android:exported="true" android:excludeFromRecents="true" android:configChanges="mcc|mnc|locale|keyboardHidden|orientation|fontScale">
-            <intent-filter>
-                <action android:name="com.motorola.motosimuihelper.UPDATE_NETWORK_MODE" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+        </service>
     </application>
 </manifest>
