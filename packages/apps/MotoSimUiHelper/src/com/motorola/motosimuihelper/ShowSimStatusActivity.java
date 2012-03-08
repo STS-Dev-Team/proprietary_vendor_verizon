@@ -52,7 +52,8 @@ public class ShowSimStatusActivity  extends Service {
     static final int COMMAND_READ_BINARY = 0xb0;
 
     static final int DEFAULT_DELAY = 1000;
-    static final int DEFAULT_LTE_ABORT_DELAY = 17000;
+    static final int DEFAULT_FIRST_LTE_ABORT_DELAY = 6000;
+    static final int DEFAULT_LTE_ABORT_DELAY = 45000;
 
     private Phone mPhone = null;
     private boolean mInAirplaneMode = false;
@@ -62,22 +63,13 @@ public class ShowSimStatusActivity  extends Service {
     private ShowSimStatusReceiver mShowSimStatusReceiver;
     private boolean mSimLoaded = false;
     public int mPreferredNetwork = 0;
+    public int mAbortCounter = 0;
 
 
     private Runnable updateNetworkModeGSM = new Runnable() {
         @Override
         public void run() {
             Log.e(TAG, "[SHOWSIMSTATUS] NETWORK MODE CHANGE: GSM_ONLY");
-            /* Save the Preferred Network */
-/*
-            ShowSimStatusActivity.this.mPreferredNetwork = android.provider.Settings.Secure.getInt(
-                    mPhone.getContext().getContentResolver(),
-                    android.provider.Settings.Secure.PREFERRED_NETWORK_MODE,
-                    Phone.NT_MODE_GLOBAL);
-            android.provider.Settings.Secure.putInt(ShowSimStatusActivity.this.mPhone.getContext().getContentResolver(),
-                    android.provider.Settings.Secure.PREFERRED_NETWORK_MODE,
-                    Phone.NT_MODE_GSM_ONLY );
-*/
             ShowSimStatusActivity.this.mPhone.setPreferredNetworkType(Phone.NT_MODE_GSM_ONLY, ShowSimStatusActivity.this.mHandler.obtainMessage(2));
         }
     };
@@ -86,13 +78,14 @@ public class ShowSimStatusActivity  extends Service {
         @Override
         public void run() {
             Log.e(TAG, "[SHOWSIMSTATUS] NETWORK MODE CHANGE: LTE");
-/*
-            android.provider.Settings.Secure.putInt(ShowSimStatusActivity.this.mPhone.getContext().getContentResolver(),
-                    android.provider.Settings.Secure.PREFERRED_NETWORK_MODE,
-                    Phone.NT_MODE_GLOBAL );
-*/
             ShowSimStatusActivity.this.mPhone.setPreferredNetworkType(Phone.NT_MODE_GLOBAL, ShowSimStatusActivity.this.mHandler.obtainMessage(3));
-            ShowSimStatusActivity.this.mHandler.postDelayed(abortNetworkModeLTE, DEFAULT_LTE_ABORT_DELAY);
+            mAbortCounter += 1;
+            if (mAbortCounter <= 1) {
+                // We crash out pretty quick on the first LTE toggle, so set a short delay
+                ShowSimStatusActivity.this.mHandler.postDelayed(abortNetworkModeLTE, DEFAULT_FIRST_LTE_ABORT_DELAY);
+            }
+            else
+                ShowSimStatusActivity.this.mHandler.postDelayed(abortNetworkModeLTE, DEFAULT_LTE_ABORT_DELAY);
         }
     };
 
@@ -100,11 +93,6 @@ public class ShowSimStatusActivity  extends Service {
         @Override
         public void run() {
             mSimLoaded = false;
-/*
-            android.provider.Settings.Secure.putInt(ShowSimStatusActivity.this.mPhone.getContext().getContentResolver(),
-                    android.provider.Settings.Secure.PREFERRED_NETWORK_MODE,
-                    ShowSimStatusActivity.this.mPreferredNetwork );
-*/
             Log.e(TAG, "[SHOWSIMSTATUS] NETWORK MODE CHANGE: LTE ABORT ABORT");
             ShowSimStatusActivity.this.mHandler.removeCallbacks(updateNetworkModeGSM);
             ShowSimStatusActivity.this.mHandler.postDelayed(updateNetworkModeGSM, DEFAULT_DELAY);
@@ -115,11 +103,6 @@ public class ShowSimStatusActivity  extends Service {
         @Override
         public void run() {
             Log.e(TAG, "[SHOWSIMSTATUS] NETWORK MODE CHANGE: PREFERRED");
-/*
-            android.provider.Settings.Secure.putInt(ShowSimStatusActivity.this.mPhone.getContext().getContentResolver(),
-                    android.provider.Settings.Secure.PREFERRED_NETWORK_MODE,
-                    ShowSimStatusActivity.this.mPreferredNetwork );
-*/
             ShowSimStatusActivity.this.mPhone.setPreferredNetworkType(ShowSimStatusActivity.this.mPreferredNetwork, ShowSimStatusActivity.this.mHandler.obtainMessage(4));
         }
     };
@@ -311,8 +294,8 @@ public class ShowSimStatusActivity  extends Service {
             if (action.equals("android.intent.action.SERVICE_STATE")) {
                 ServiceState sState = ServiceState.newFromBundle(intent.getExtras());
                 if (sState != null) {
-// 02-28 22:57:18.061: D/MotoSimUiHelper(518): Receive SERVICE_STATE [0 home ***  31000  LTE:14 CSS supported 2 2 RoamInd=64 DefRoamInd=64 EmergOnly=false] == NOT A TRIGGER
-// 02-28 23:07:33.776: D/MotoSimUiHelper(518): Receive SERVICE_STATE [0 home Verizon Wireless  31000  LTE:14 CSS supported 2 2 RoamInd=64 DefRoamInd=64 EmergOnly=false] == NOT A TRIGGER
+// SERVICE_STATE [0 home ***  31000  LTE:14 CSS supported 2 2 RoamInd=64 DefRoamInd=64 EmergOnly=false] == NOT A TRIGGER
+// SERVICE_STATE [0 home Verizon Wireless  31000  LTE:14 CSS supported 2 2 RoamInd=64 DefRoamInd=64 EmergOnly=false] == NOT A TRIGGER
 
                     if ((sState.getState() == 0) && (sState.getOperatorAlphaLong() != null)) {
                         if ((sState.getRadioTechnology() >= ServiceState.RADIO_TECHNOLOGY_1xRTT)
@@ -345,6 +328,12 @@ public class ShowSimStatusActivity  extends Service {
                     }
                     else if ((reason.equals("dependancyMet")) || (reason.equals("dataAttached")) || (reason.equals("dataEnabled"))) {
                         mHandler.removeCallbacks(abortNetworkModeLTE);
+                    }
+                    else if ((reason.equals("apnChanged")) && (info != null)) {
+// ACTION CONNECTIVITY_CHANGE [NetworkInfo = NetworkInfo: type: mobile[LTE], state: CONNECTED/CONNECTED, reason: apnChanged, extra: VZWINTERNET, roaming: false, failover: false, isAvailable: true]
+                        if (info.isConnected() && info.isAvailable()) {
+                            mHandler.removeCallbacks(abortNetworkModeLTE);
+                        }
                     }
                 }
             }
