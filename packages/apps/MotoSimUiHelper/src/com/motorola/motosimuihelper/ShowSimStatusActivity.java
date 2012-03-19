@@ -51,8 +51,8 @@ public class ShowSimStatusActivity  extends Service {
     static final int EF_HPLMNACT_ID = 0x6f62;
     static final int COMMAND_READ_BINARY = 0xb0;
 
-    static final int DEFAULT_DELAY = 1000;
-    static final int DEFAULT_FIRST_LTE_ABORT_DELAY = 6000;
+    static final int DEFAULT_DELAY = 2000;
+    static final int DEFAULT_FIRST_LTE_ABORT_DELAY = 8000;
     static final int DEFAULT_LTE_ABORT_DELAY = 45000;
 
     private Phone mPhone = null;
@@ -84,7 +84,7 @@ public class ShowSimStatusActivity  extends Service {
                 // We crash out pretty quick on the first LTE toggle, so set a short delay
                 ShowSimStatusActivity.this.mHandler.postDelayed(abortNetworkModeLTE, DEFAULT_FIRST_LTE_ABORT_DELAY);
             }
-            else
+            else if (mAbortCounter <= 2) // Don't try this more than 2 times
                 ShowSimStatusActivity.this.mHandler.postDelayed(abortNetworkModeLTE, DEFAULT_LTE_ABORT_DELAY);
         }
     };
@@ -103,7 +103,7 @@ public class ShowSimStatusActivity  extends Service {
         @Override
         public void run() {
             Log.e(TAG, "[SHOWSIMSTATUS] NETWORK MODE CHANGE: PREFERRED");
-            ShowSimStatusActivity.this.mPhone.setPreferredNetworkType(ShowSimStatusActivity.this.mPreferredNetwork, ShowSimStatusActivity.this.mHandler.obtainMessage(4));
+            // ShowSimStatusActivity.this.mPhone.setPreferredNetworkType(ShowSimStatusActivity.this.mPreferredNetwork, ShowSimStatusActivity.this.mHandler.obtainMessage(4));
         }
     };
 
