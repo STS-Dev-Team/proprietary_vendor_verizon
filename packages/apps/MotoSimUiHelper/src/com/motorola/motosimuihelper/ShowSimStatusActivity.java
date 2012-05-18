@@ -291,6 +291,7 @@ public class ShowSimStatusActivity  extends Service {
             String action = intent.getAction();
             int i = -1;
 
+/*
             if (action.equals("android.intent.action.SERVICE_STATE")) {
                 ServiceState sState = ServiceState.newFromBundle(intent.getExtras());
                 if (sState != null) {
@@ -337,7 +338,9 @@ public class ShowSimStatusActivity  extends Service {
                     }
                 }
             }
-            else if (action.equals(TelephonyIntents.ACTION_SIM_STATE_CHANGED)) {
+            else
+*/
+            if (action.equals(TelephonyIntents.ACTION_SIM_STATE_CHANGED)) {
                 if (!mSimLoaded) {
                     Log.d(TAG, "[SHOWSIMSTATUS] ----- ACTION SIM_STATE_CHANGED START");
                     i = checkSimStatus();
@@ -345,7 +348,7 @@ public class ShowSimStatusActivity  extends Service {
                 }
             }
             else if (action.equals(Intent.ACTION_AIRPLANE_MODE_CHANGED)) {
-                handleAirplaneModeChanged(intent);
+                // handleAirplaneModeChanged(intent);
             }
 
         }

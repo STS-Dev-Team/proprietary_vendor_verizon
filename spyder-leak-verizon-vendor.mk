@@ -26,6 +26,7 @@ PRODUCT_PACKAGES += \
 	MotoLocationProxy \
 	MotoLteTelephony \
 	MotoModemUtil \
+	MotoSimUiHelper \
 	ProgramMenu \
 	ProgramMenuSystem \
 	vzwapnpermission
