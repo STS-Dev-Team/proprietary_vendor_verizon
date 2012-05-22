@@ -22,12 +22,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.SystemProperties;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import com.android.internal.telephony.CommandsInterface;
+import com.android.internal.telephony.CommandsInterface.RadioState;
 import com.android.internal.telephony.IccCard;
 import com.android.internal.telephony.IccCardApplication;
 import com.android.internal.telephony.IccCardApplication.AppType;
@@ -37,6 +39,7 @@ import com.android.internal.telephony.IccFileHandler;
 import com.android.internal.telephony.Phone;
 import com.android.internal.telephony.PhoneFactory;
 import com.android.internal.telephony.PhoneProxy;
+import com.android.internal.telephony.RILConstants;
 import com.android.internal.telephony.TelephonyIntents;
 import android.telephony.ServiceState;
 import android.provider.Settings;
@@ -47,6 +50,7 @@ public class ShowSimStatusActivity  extends Service {
     static final String TAG = "MotoSimUiHelper";
 
     private static String ACTION_SIM_SHOW = "com.motorola.motosimuihelper.SIM_SHOW_INTENT";
+    private static boolean DBG = false;
 
     static final int EF_HPLMNACT_ID = 0x6f62;
     static final int COMMAND_READ_BINARY = 0xb0;
@@ -64,12 +68,13 @@ public class ShowSimStatusActivity  extends Service {
     private boolean mSimLoaded = false;
     public int mPreferredNetwork = 0;
     public int mAbortCounter = 0;
-
+    public int mDefaultNetworkMode = 10; // NETWORK_MODE_LTE_CMDA_EVDO_GSM_WCDMA
+    public boolean mBusy = false;
 
     private Runnable updateNetworkModeGSM = new Runnable() {
         @Override
         public void run() {
-            Log.e(TAG, "[SHOWSIMSTATUS] NETWORK MODE CHANGE: GSM_ONLY");
+            if (DBG) Log.e(TAG, "[SHOWSIMSTATUS] NETWORK MODE CHANGE: GSM_ONLY");
             ShowSimStatusActivity.this.mPhone.setPreferredNetworkType(Phone.NT_MODE_GSM_ONLY, ShowSimStatusActivity.this.mHandler.obtainMessage(2));
         }
     };
@@ -77,8 +82,8 @@ public class ShowSimStatusActivity  extends Service {
     private Runnable updateNetworkModeLTE = new Runnable() {
         @Override
         public void run() {
-            Log.e(TAG, "[SHOWSIMSTATUS] NETWORK MODE CHANGE: LTE");
-            ShowSimStatusActivity.this.mPhone.setPreferredNetworkType(Phone.NT_MODE_GLOBAL, ShowSimStatusActivity.this.mHandler.obtainMessage(3));
+            if (DBG) Log.e(TAG, "[SHOWSIMSTATUS] NETWORK MODE CHANGE: LTE");
+            ShowSimStatusActivity.this.mPhone.setPreferredNetworkType(mDefaultNetworkMode, ShowSimStatusActivity.this.mHandler.obtainMessage(3));
             mAbortCounter += 1;
             if (mAbortCounter <= 1) {
                 // We crash out pretty quick on the first LTE toggle, so set a short delay
@@ -93,7 +98,7 @@ public class ShowSimStatusActivity  extends Service {
         @Override
         public void run() {
             mSimLoaded = false;
-            Log.e(TAG, "[SHOWSIMSTATUS] NETWORK MODE CHANGE: LTE ABORT ABORT");
+            if (DBG) Log.e(TAG, "[SHOWSIMSTATUS] NETWORK MODE CHANGE: LTE ABORT ABORT");
             ShowSimStatusActivity.this.mHandler.removeCallbacks(updateNetworkModeGSM);
             ShowSimStatusActivity.this.mHandler.postDelayed(updateNetworkModeGSM, DEFAULT_DELAY);
         }
@@ -102,7 +107,7 @@ public class ShowSimStatusActivity  extends Service {
     private Runnable updateNetworkModePreferred = new Runnable() {
         @Override
         public void run() {
-            Log.e(TAG, "[SHOWSIMSTATUS] NETWORK MODE CHANGE: PREFERRED");
+            if (DBG) Log.e(TAG, "[SHOWSIMSTATUS] NETWORK MODE CHANGE: PREFERRED");
             // ShowSimStatusActivity.this.mPhone.setPreferredNetworkType(ShowSimStatusActivity.this.mPreferredNetwork, ShowSimStatusActivity.this.mHandler.obtainMessage(4));
         }
     };
@@ -113,7 +118,7 @@ public class ShowSimStatusActivity  extends Service {
             switch (paramMessage.what) {
 
                 case 1:
-                    Log.d(TAG, "[SHOWSIMSTATUS] ----- ACTION SIM_STATE_CHANGE :: EVENT_READ_RECORD_DONE Message");
+                    if (DBG) Log.d(TAG, "[SHOWSIMSTATUS] ----- ACTION SIM_STATE_CHANGE :: EVENT_READ_RECORD_DONE Message");
                     AsyncResult localAsyncResult = (AsyncResult)paramMessage.obj;
                     IccIoResult ioResult = (IccIoResult)localAsyncResult.result;
                     if (localAsyncResult.exception == null) {
@@ -122,7 +127,7 @@ public class ShowSimStatusActivity  extends Service {
                                 Log.e(TAG, "[SHOWSIMSTATUS] ERROR: EUTRAN is not avaliable");
                             }
                             else {
-                                Log.d(TAG, "[SHOWSIMSTATUS] MSG: EUTRAN is avaliable");
+                                if (DBG) Log.d(TAG, "[SHOWSIMSTATUS] MSG: EUTRAN is avaliable");
                                 String lineNum = ShowSimStatusActivity.this.mPhone.getLine1Number();
                                 if ((lineNum != null) && (!lineNum.startsWith("00000"))) {
                                     Log.d(TAG, "[SHOWSIMSTATUS] MSG: SIM is a valid activated Verizon 4G SIM");
@@ -217,7 +222,7 @@ public class ShowSimStatusActivity  extends Service {
 
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "[SHOWSIMSTATUS] onCreate");
+        if (DBG) Log.d(TAG, "[SHOWSIMSTATUS] onCreate");
         init();
     }
 
@@ -230,6 +235,7 @@ public class ShowSimStatusActivity  extends Service {
 */
         this.mContext = this;
         this.mPhone = PhoneFactory.getDefaultPhone();
+        this.mDefaultNetworkMode =  SystemProperties.getInt("ro.telephony.default_network", RILConstants.NETWORK_MODE_LTE_CMDA_EVDO_GSM_WCDMA);
         try {
             mShowSimStatusReceiver = new ShowSimStatusReceiver();
             IntentFilter localIntentFilter = new IntentFilter();
@@ -273,12 +279,12 @@ public class ShowSimStatusActivity  extends Service {
         mInAirplaneMode = intent.getBooleanExtra("state", false);
         Log.d(TAG, "[SHOWSIMSTATUS] MSG AirplaneModeChanged set to: " + mInAirplaneMode);
         if (mInAirplaneMode != mPrevInAirplaneMode) {
-            Log.d(TAG, "[SHOWSIMSTATUS] ----- ACTION TRIGGER mInAirplaneMode != mPrevInAirplaneMode");
+            if (DBG) Log.d(TAG, "[SHOWSIMSTATUS] ----- ACTION TRIGGER mInAirplaneMode != mPrevInAirplaneMode");
+            if (DBG) Log.d(TAG, "[SHOWSIMSTATUS] ----- ACTION TRIGGER [ SimLoaded == " + mSimLoaded + ", mInAirplaneMode == " + mInAirplaneMode);
             if (!mSimLoaded && !mInAirplaneMode)
                 mHandler.removeCallbacks(updateNetworkModeGSM);
                 mHandler.postDelayed(updateNetworkModeGSM, DEFAULT_DELAY);
             if (mInAirplaneMode) {
-                Log.d(TAG, "[SHOWSIMSTATUS] ----- ACTION TRIGGER mInAirplaneMode != mPrevInAirplaneMode");
                 mSimLoaded = false;
             }
         }
@@ -291,64 +297,84 @@ public class ShowSimStatusActivity  extends Service {
             String action = intent.getAction();
             int i = -1;
 
-/*
             if (action.equals("android.intent.action.SERVICE_STATE")) {
                 ServiceState sState = ServiceState.newFromBundle(intent.getExtras());
                 if (sState != null) {
+                    if (DBG) Log.d(TAG, "[SHOWSIMSTATUS] ----- ACTION SERVICE_STATE     [RADIO == " + ShowSimStatusActivity.this.mCM.getRadioState().toString() + "]");
+                    if (DBG) Log.d(TAG, "[SHOWSIMSTATUS] ----- ACTION SERVICE_STATE     [PHONE == " + sState.getRadioTechnology() + "]");
+                    
 // SERVICE_STATE [0 home ***  31000  LTE:14 CSS supported 2 2 RoamInd=64 DefRoamInd=64 EmergOnly=false] == NOT A TRIGGER
 // SERVICE_STATE [0 home Verizon Wireless  31000  LTE:14 CSS supported 2 2 RoamInd=64 DefRoamInd=64 EmergOnly=false] == NOT A TRIGGER
 
                     if ((sState.getState() == 0) && (sState.getOperatorAlphaLong() != null)) {
                         if ((sState.getRadioTechnology() >= ServiceState.RADIO_TECHNOLOGY_1xRTT)
-                                && (sState.getCdmaRoamingIndicator() >= 64)
-                                && (!mSimLoaded)) {
-                            Log.d(TAG, "[SHOWSIMSTATUS] ----- ACTION SERVICE_STATE [NOSIM " + sState.toString() + "] == NETWORK STATE CHANGE");
+                                && (sState.getCdmaDefaultRoamingIndicator() >= 64)
+                                && (!mSimLoaded) && (!mBusy)) {
+                            mBusy = true;
+                            if (DBG) Log.d(TAG, "[SHOWSIMSTATUS] ----- ACTION SERVICE_STATE (X) [NOSIM " + sState.toString() + "]");
                             mHandler.removeCallbacks(updateNetworkModeGSM);
                             mHandler.postDelayed(updateNetworkModeGSM, DEFAULT_DELAY);
                         }
                         else {
-                             Log.d(TAG, "[SHOWSIMSTATUS] ----- ACTION SERVICE_STATE [" + (mSimLoaded ? "SIM " : "NOSIM ") + sState.toString() + "] == NOT A TRIGGER");
+                            if (DBG) Log.d(TAG, "[SHOWSIMSTATUS] ----- ACTION SERVICE_STATE ( ) [" + (mSimLoaded ? "SIM " : "NOSIM ") + sState.toString() + "]");
                         }
                     }
                     else {
-                        Log.d(TAG, "[SHOWSIMSTATUS] ----- ACTION SERVICE_STATE [" + (mSimLoaded ? "SIM " : "NOSIM ") + sState.toString() + "] == NOT A TRIGGER");
+                        if (DBG) Log.d(TAG, "[SHOWSIMSTATUS] ----- ACTION SERVICE_STATE ( ) [" + (mSimLoaded ? "SIM " : "NOSIM ") + sState.toString() + "]");
                     }
                 }
             }
             else if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
                 NetworkInfo info = (NetworkInfo)intent.getExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
                 String reason = (String)intent.getStringExtra(ConnectivityManager.EXTRA_REASON);
-                Log.d(TAG, "[SHOWSIMSTATUS] ----- ACTION CONNECTIVITY_CHANGE");
                 if (info != null) {
-                    Log.d(TAG, "[SHOWSIMSTATUS] ----- ACTION CONNECTIVITY_CHANGE [NetworkInfo = " + info.toString() + "]");
+                    if (DBG) Log.d(TAG, "[SHOWSIMSTATUS] ----- ACTION CONNECTIVITY_CHANGE [NetworkInfo = " + info.toString() + "]");
+		} else {
+                    if (DBG) Log.d(TAG, "[SHOWSIMSTATUS] ----- ACTION CONNECTIVITY_CHANGE [NetworkInfo = null ]");
                 }
                 if (reason != null) {
-                    Log.e(TAG, "[SHOWSIMSTATUS] ----- ACTION CONNECTIVITY_CHANGE [Reason = " + reason + "]");
+                    if (DBG) Log.e(TAG, "[SHOWSIMSTATUS] ----- ACTION CONNECTIVITY_CHANGE [Reason = " + reason + "]");
                     if (reason.equals("radioTurnedOff")) {
                         mSimLoaded = false;
                     }
                     else if ((reason.equals("dependancyMet")) || (reason.equals("dataAttached")) || (reason.equals("dataEnabled"))) {
+                        if (DBG) Log.e(TAG, "[SHOWSIMSTATUS] ----- ACTION CONNECTIVITY_CHANGE [Reason = " + reason + "]");
                         mHandler.removeCallbacks(abortNetworkModeLTE);
                     }
                     else if ((reason.equals("apnChanged")) && (info != null)) {
-// ACTION CONNECTIVITY_CHANGE [NetworkInfo = NetworkInfo: type: mobile[LTE], state: CONNECTED/CONNECTED, reason: apnChanged, extra: VZWINTERNET, roaming: false, failover: false, isAvailable: true]
+// ACTION CONNECTIVITY_CHANGE [
+// NetworkInfo = NetworkInfo:
+// type: mobile[LTE],
+// state: CONNECTED/CONNECTED,
+// reason: apnChanged,
+// extra: VZWINTERNET,
+// roaming: false,
+// failover: false,
+// isAvailable: true ]
                         if (info.isConnected() && info.isAvailable()) {
+                            if (DBG) Log.e(TAG, "[SHOWSIMSTATUS] ----- ACTION CONNECTIVITY_CHANGE [ isConnected && isAvailable ]");
                             mHandler.removeCallbacks(abortNetworkModeLTE);
                         }
                     }
                 }
             }
-            else
-*/
-            if (action.equals(TelephonyIntents.ACTION_SIM_STATE_CHANGED)) {
-                if (!mSimLoaded) {
-                    Log.d(TAG, "[SHOWSIMSTATUS] ----- ACTION SIM_STATE_CHANGED START");
-                    i = checkSimStatus();
-                    Log.d(TAG, "[SHOWSIMSTATUS] ----- ACTION SIM_STATE_CHANGED [CheckSimStatus == " + i + "]");
+            else if (action.equals(TelephonyIntents.ACTION_SIM_STATE_CHANGED)) {
+                String iccState = (String)intent.getStringExtra(IccCard.INTENT_KEY_ICC_STATE);
+                if (iccState != null) {
+                    if (DBG) Log.d(TAG, "[SHOWSIMSTATUS] ----- ACTION SIM_STATE_CHANGED [iccCardState = " + iccState.toString() + "]");
+                    if (!mSimLoaded && iccState.equals("IMSI")) {
+//                        mHandler.removeCallbacks(updateNetworkModeGSM);
+//                        mHandler.postDelayed(updateNetworkModeGSM, DEFAULT_DELAY);
+                    } else if (!mSimLoaded && iccState.equals("LOADED")) {
+                        if (DBG) Log.d(TAG, "[SHOWSIMSTATUS] ----- ACTION SIM_STATE_CHANGED START");
+                        i = checkSimStatus();
+                        if (DBG) Log.d(TAG, "[SHOWSIMSTATUS] ----- ACTION SIM_STATE_CHANGED [CheckSimStatus == " + i + "]");
+                    }
                 }
             }
             else if (action.equals(Intent.ACTION_AIRPLANE_MODE_CHANGED)) {
-                // handleAirplaneModeChanged(intent);
+                    if (DBG) Log.d(TAG, "[SHOWSIMSTATUS] ----- AIRPLANE_MODE_CHANGED");
+                    handleAirplaneModeChanged(intent);
             }
 
         }
