@@ -22,7 +22,7 @@ include $(all-subdir-makefiles)
 
 
 PRODUCT_PACKAGES += \
-	AppDirectedSmsService \
+	appdirectedsmspermission \
 	MotoImsServer \
 	MotoLocationProxy \
 	MotoLteTelephony \

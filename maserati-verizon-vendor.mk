@@ -21,7 +21,7 @@ PRODUCT_COPY_FILES += \
 
 
 PRODUCT_PACKAGES += \
-	AppDirectedSmsService \
+	appdirectedsmspermission \
 	MotoImsServer \
 	MotoLocationProxy \
 	MotoLteTelephony \
