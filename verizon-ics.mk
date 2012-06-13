@@ -22,11 +22,8 @@ include $(all-subdir-makefiles)
 
 PRODUCT_PACKAGES += \
 	appdirectedsmspermission \
-	MotoImsServer \
-	MotoLocationProxy \
-	MotoLteTelephony \
-	MotoModemUtil \
-	MotoSimUiHelperICS \
+	com.motorola.android.server.ims \
+	DataRoaming \
+	ModemPanicReporter \
 	ProgramMenu \
 	ProgramMenuSystem \
-	vzwapnpermission
