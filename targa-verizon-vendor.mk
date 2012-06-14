@@ -23,7 +23,5 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
 	com.motorola.android.server.ims \
 	LocationProxyDmPlugin \
-	ProgramMenu \
-	ProgramMenuSystem \
 	vzwapnpermission \
 	vzwappdirectedsmspermission
