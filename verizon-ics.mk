@@ -19,5 +19,4 @@ include $(all-subdir-makefiles)
 PRODUCT_PACKAGES += \
 	appdirectedsmspermission \
 	com.motorola.android.server.ims \
-	ModemStatsService \
 	vzwapnpermission \
