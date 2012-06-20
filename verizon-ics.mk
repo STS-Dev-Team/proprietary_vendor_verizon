@@ -16,17 +16,8 @@
 
 include $(all-subdir-makefiles)
 
-#PRODUCT_COPY_FILES += \
-#    vendor/verizon/proprietary/libims_client_jni.so:system/lib/libims_client_jni.so
-
-
 PRODUCT_PACKAGES += \
 	appdirectedsmspermission \
-	MotoImsServer \
-	MotoLocationProxy \
-	MotoLteTelephony \
-	MotoModemUtil \
-	MotoSimUiHelperICS \
-	ProgramMenu \
-	ProgramMenuSystem \
-	vzwapnpermission
+	com.motorola.android.server.ims \
+	ModemStatsService \
+	vzwapnpermission \
