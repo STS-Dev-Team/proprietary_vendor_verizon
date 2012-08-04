@@ -305,8 +305,6 @@ public class ShowSimStatusActivity  extends Service {
                     
 // SERVICE_STATE [0 home ***  31000  LTE:14 CSS supported 2 2 RoamInd=64 DefRoamInd=64 EmergOnly=false] == NOT A TRIGGER
 // SERVICE_STATE [0 home Verizon Wireless  31000  LTE:14 CSS supported 2 2 RoamInd=64 DefRoamInd=64 EmergOnly=false] == NOT A TRIGGER
-//08-03 17:55:11.085: D/MotoSimUiHelper(676): [SHOWSIMSTATUS] ----- ACTION SERVICE_STATE ( ) [NOSIM 1 home null null null  Unknown:0 CSS not supported -1 -1 RoamInd=-1 DefRoamInd=-1 EmergOnly=false]
-//08-03 17:55:24.429: D/MotoSimUiHelper(676): [SHOWSIMSTATUS] ----- ACTION SERVICE_STATE     [RADIO == RUIM_NOT_READY]
 
                     if ((sState.getState() == 0) && (sState.getOperatorAlphaLong() != null)) {
                         if ((sState.getRadioTechnology() >= ServiceState.RIL_RADIO_TECHNOLOGY_1xRTT)
@@ -317,16 +315,6 @@ public class ShowSimStatusActivity  extends Service {
                             mHandler.removeCallbacks(updateNetworkModeGSM);
                             mHandler.postDelayed(updateNetworkModeGSM, DEFAULT_DELAY);
                         }
-                            else if ((sState.getState() == 0)) {
-                                    if ((sState.getRadioTechnology() <= ServiceState.RIL_RADIO_TECHNOLOGY_1xRTT)
-                                            && (sState.getCdmaDefaultRoamingIndicator() == -1)
-                                            && (!mSimLoaded) && (!mBusy)) {
-                                        mBusy = true;
-                                        if (DBG) Log.d(TAG, "[SHOWSIMSTATUS] ----- ACTION SERVICE_STATE (X) [NOSIM " + sState.toString() + "]");
-                                        mHandler.removeCallbacks(updateNetworkModeGSM);
-                                        mHandler.postDelayed(updateNetworkModeGSM, DEFAULT_DELAY);
-                                }
-                            }
                         else {
                             if (DBG) Log.d(TAG, "[SHOWSIMSTATUS] ----- ACTION SERVICE_STATE ( ) [" + (mSimLoaded ? "SIM " : "NOSIM ") + sState.toString() + "]");
                         }
