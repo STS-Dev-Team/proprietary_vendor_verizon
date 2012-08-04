@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wrong_operator_title">Wrong Operator</string>
+    <string name="wrong_operator_notice">This SIM card is from an unknown source.</string>
+    <string name="wrong_operator">This SIM card is from an unknown source.</string>
+    <string name="wrong_sim_title">Unknown SIM Card</string>
+    <string name="wrong_sim_notice">This SIM card is not supported.</string>
+    <string name="wrong_sim">Sorry, this SIM card is not supported. Please contact your wireless service provider.</string>
+    <string name="network_mode_title">4G SIM Available</string>
+    <string name="network_mode">4G SIM is available on device. Would you like to switch to LTE/CDMA mode?</string>
+    <string name="ok">OK</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+</resources>

@@ -16,9 +16,11 @@
 
 include $(all-subdir-makefiles)
 
+PRODUCT_COPY_FILES += \
+    vendor/verizon/proprietary/com.motorola.android.restoreapn.droidrazr.apk:/system/app/com.motorola.android.restoreapn.droidrazr.apk
 
 PRODUCT_PACKAGES += \
 	appdirectedsmspermission \
 	com.motorola.android.server.ims \
-	MotoSimUiHelperICS \
-	vzwapnpermission
+	MotoSimUiHelper \
+	vzwapnpermission \
