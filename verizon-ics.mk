@@ -20,4 +20,4 @@ PRODUCT_PACKAGES += \
 	appdirectedsmspermission \
 	com.motorola.android.server.ims \
 	MotoSimUiHelper \
-	vzwapnpermission \
+	vzwapnpermission
